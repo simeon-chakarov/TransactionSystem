@@ -43,9 +43,17 @@ while (true)
                 break;
         }
     }
+    catch (ArgumentException ex)
+    {
+        Console.WriteLine($"Validation error: {ex.Message}");
+    }
+    catch (InvalidOperationException ex)
+    {
+        Console.WriteLine($"Operation error: {ex.Message}");
+    }
     catch (Exception ex)
     {
-        Console.WriteLine($"Error: {ex.Message}");
+        Console.WriteLine($"Unexpected error: {ex}");
     }
 
     Pause();
