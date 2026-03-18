@@ -23,6 +23,45 @@ public class TransactionServiceTests
         Assert.Equal(100m, balance);
     }
 
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void CreateAccount_Should_Throw_When_AccountNumber_Is_Invalid(string accountNumber)
+    {
+        Assert.Throws<ArgumentException>(() =>
+        {
+            _service.CreateAccount(accountNumber, "Ivan", 100m);
+        });
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void CreateAccount_Should_Throw_When_HolderName_Is_Invalid(string holderName)
+    {
+        Assert.Throws<ArgumentException>(() =>
+        {
+            _service.CreateAccount("ACC1", holderName, 100m);
+        });
+    }
+
+    [Fact]
+    public void CreateAccount_Should_Throw_When_InitialBalance_Is_Negative()
+    {
+        Assert.Throws<ArgumentException>(() =>
+        {
+            _service.CreateAccount("ACC1", "Ivan", -1m);
+        });
+    }
+
+    [Fact]
+    public void CreateAccount_Should_Allow_Zero_Initial_Balance()
+    {
+        _service.CreateAccount("ACC1", "Ivan", 0m);
+
+        Assert.Equal(0m, _service.GetBalance("ACC1"));
+    }
+
     [Fact]
     public void CreateAccount_Should_Throw_When_AccountNumber_Already_Exists()
     {
@@ -56,6 +95,15 @@ public class TransactionServiceTests
         Assert.Throws<ArgumentException>(() =>
         {
             _service.Deposit("ACC1", (decimal)amount);
+        });
+    }
+
+    [Fact]
+    public void Deposit_Should_Throw_When_Account_Does_Not_Exist()
+    {
+        Assert.Throws<InvalidOperationException>(() =>
+        {
+            _service.Deposit("MISSING", 10m);
         });
     }
 
@@ -96,6 +144,25 @@ public class TransactionServiceTests
     }
 
     [Fact]
+    public void Withdraw_Should_Allow_Withdrawing_Exact_Balance()
+    {
+        _service.CreateAccount("ACC1", "Ivan", 100m);
+
+        _service.Withdraw("ACC1", 100m);
+
+        Assert.Equal(0m, _service.GetBalance("ACC1"));
+    }
+
+    [Fact]
+    public void Withdraw_Should_Throw_When_Account_Does_Not_Exist()
+    {
+        Assert.Throws<InvalidOperationException>(() =>
+        {
+            _service.Withdraw("MISSING", 10m);
+        });
+    }
+
+    [Fact]
     public void GetBalance_Should_Throw_When_Account_Does_Not_Exist()
     {
         Assert.Throws<InvalidOperationException>(() =>
@@ -128,6 +195,20 @@ public class TransactionServiceTests
         Assert.Throws<InvalidOperationException>(() =>
         {
             _service.Transfer("ACC1", "ACC2", 100m);
+        });
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void Transfer_Should_Throw_When_Amount_Is_Not_Positive(double amount)
+    {
+        _service.CreateAccount("ACC1", "Ivan", 100m);
+        _service.CreateAccount("ACC2", "Maria", 100m);
+
+        Assert.Throws<ArgumentException>(() =>
+        {
+            _service.Transfer("ACC1", "ACC2", (decimal)amount);
         });
     }
 
