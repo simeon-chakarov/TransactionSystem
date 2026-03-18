@@ -5,10 +5,10 @@ namespace TransactionSystem.Models;
 public sealed class Account
 {
     private readonly object _lock = new();
+    private decimal _balance;
 
     public string AccountNumber { get; }
-    public string HolderName { get; }
-    public decimal Balance { get; private set; }
+    public string HolderName { get; }   
 
     public Account(string accountNumber, string holderName, decimal initialBalance)
     {
@@ -29,7 +29,7 @@ public sealed class Account
 
         AccountNumber = accountNumber;
         HolderName = holderName;
-        Balance = initialBalance;
+        _balance = initialBalance;
     }
 
     public void Deposit(decimal amount)
@@ -41,7 +41,7 @@ public sealed class Account
 
         lock (_lock)
         {
-            Balance += amount;
+            _balance += amount;
         }
     }
 
@@ -54,12 +54,12 @@ public sealed class Account
 
         lock (_lock)
         {
-            if (Balance < amount)
+            if (_balance < amount)
             {
                 throw new InvalidOperationException(ErrorMessages.InsufficientFunds);
             }
 
-            Balance -= amount;
+            _balance -= amount;
         }
     }
 
@@ -67,7 +67,7 @@ public sealed class Account
     {
         lock (_lock)
         {
-            return Balance;
+            return _balance;
         }
     }
 
@@ -101,13 +101,13 @@ public sealed class Account
         {
             lock (secondAccountToLock._lock)
             {
-                if (Balance < amount)
+                if (_balance < amount)
                 {
                     throw new InvalidOperationException(ErrorMessages.InsufficientFunds);
                 }
 
-                Balance -= amount;
-                target.Balance += amount;
+                _balance -= amount;
+                target._balance += amount;
             }
         }
     }
