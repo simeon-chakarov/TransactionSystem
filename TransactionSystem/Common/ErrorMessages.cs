@@ -12,4 +12,7 @@ public static class ErrorMessages
     public const string AccountNotFound = "Account not found.";
     public const string DuplicateAccount = "An account with this number already exists.";
     public const string CannotTransferToSameAccount = "Cannot transfer to the same account.";
+    public const string InvalidAmount = "Invalid amount.";
+    public const string SourceAccountNumberRequired = "Source account number is required.";
+    public const string DestinationAccountNumberRequired = "Destination account number is required.";
 }

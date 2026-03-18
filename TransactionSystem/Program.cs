@@ -1,4 +1,5 @@
-﻿using TransactionSystem.Services;
+﻿using TransactionSystem.Common;
+using TransactionSystem.Services;
 using TransactionSystem.Storage;
 
 var accountRepository = new InMemoryAccountRepository();
@@ -78,9 +79,21 @@ static void CreateAccount(ITransactionService transactionService)
     var holderName = ReadInput("Enter account holder name: ");
     var initialBalance = ReadAmount("Enter initial balance: ");
 
+    if (string.IsNullOrWhiteSpace(accountNumber))
+    {
+        Console.WriteLine(ErrorMessages.AccountNumberRequired);
+        return;
+    }
+
+    if (string.IsNullOrWhiteSpace(holderName))
+    {
+        Console.WriteLine(ErrorMessages.AccountHolderNameRequired);
+        return;
+    }
+
     if (initialBalance is null)
     {
-        Console.WriteLine("Invalid amount.");
+        Console.WriteLine(ErrorMessages.InvalidAmount);
         return;
     }
 
@@ -93,9 +106,15 @@ static void Deposit(ITransactionService transactionService)
     var accountNumber = ReadInput("Enter account number: ");
     var amount = ReadAmount("Enter deposit amount: ");
 
+    if (string.IsNullOrWhiteSpace(accountNumber))
+    {
+        Console.WriteLine(ErrorMessages.AccountNumberRequired);
+        return;
+    }
+
     if (amount is null)
     {
-        Console.WriteLine("Invalid amount.");
+        Console.WriteLine(ErrorMessages.InvalidAmount);
         return;
     }
 
@@ -108,9 +127,15 @@ static void Withdraw(ITransactionService transactionService)
     var accountNumber = ReadInput("Enter account number: ");
     var amount = ReadAmount("Enter withdrawal amount: ");
 
+    if (string.IsNullOrWhiteSpace(accountNumber))
+    {
+        Console.WriteLine(ErrorMessages.AccountNumberRequired);
+        return;
+    }
+
     if (amount is null)
     {
-        Console.WriteLine("Invalid amount.");
+        Console.WriteLine(ErrorMessages.InvalidAmount);
         return;
     }
 
@@ -132,9 +157,21 @@ static void TransferMoney(ITransactionService transactionService)
     var toAccountNumber = ReadInput("Enter destination account number: ");
     var amount = ReadAmount("Enter transfer amount: ");
 
+    if (string.IsNullOrWhiteSpace(fromAccountNumber))
+    {
+        Console.WriteLine(ErrorMessages.SourceAccountNumberRequired);
+        return;
+    }
+
+    if (string.IsNullOrWhiteSpace(toAccountNumber))
+    {
+        Console.WriteLine(ErrorMessages.DestinationAccountNumberRequired);
+        return;
+    }
+
     if (amount is null)
     {
-        Console.WriteLine("Invalid amount.");
+        Console.WriteLine(ErrorMessages.InvalidAmount);
         return;
     }
 
