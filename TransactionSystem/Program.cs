@@ -1,4 +1,5 @@
-﻿using TransactionSystem.Common;
+using System.Globalization;
+using TransactionSystem.Common;
 using TransactionSystem.Services;
 using TransactionSystem.Storage;
 
@@ -76,8 +77,6 @@ static void PrintMenu()
 static void CreateAccount(ITransactionService transactionService)
 {
     var accountNumber = ReadInput("Enter account number: ");
-    var holderName = ReadInput("Enter account holder name: ");
-    var initialBalance = ReadAmount("Enter initial balance: ");
 
     if (string.IsNullOrWhiteSpace(accountNumber))
     {
@@ -85,11 +84,15 @@ static void CreateAccount(ITransactionService transactionService)
         return;
     }
 
+    var holderName = ReadInput("Enter account holder name: ");
+
     if (string.IsNullOrWhiteSpace(holderName))
     {
         Console.WriteLine(ErrorMessages.AccountHolderNameRequired);
         return;
     }
+
+    var initialBalance = ReadAmount("Enter initial balance: ");
 
     if (initialBalance is null)
     {
@@ -104,13 +107,14 @@ static void CreateAccount(ITransactionService transactionService)
 static void Deposit(ITransactionService transactionService)
 {
     var accountNumber = ReadInput("Enter account number: ");
-    var amount = ReadAmount("Enter deposit amount: ");
 
     if (string.IsNullOrWhiteSpace(accountNumber))
     {
         Console.WriteLine(ErrorMessages.AccountNumberRequired);
         return;
     }
+
+    var amount = ReadAmount("Enter deposit amount: ");
 
     if (amount is null)
     {
@@ -125,13 +129,14 @@ static void Deposit(ITransactionService transactionService)
 static void Withdraw(ITransactionService transactionService)
 {
     var accountNumber = ReadInput("Enter account number: ");
-    var amount = ReadAmount("Enter withdrawal amount: ");
 
     if (string.IsNullOrWhiteSpace(accountNumber))
     {
         Console.WriteLine(ErrorMessages.AccountNumberRequired);
         return;
     }
+
+    var amount = ReadAmount("Enter withdrawal amount: ");
 
     if (amount is null)
     {
@@ -146,6 +151,13 @@ static void Withdraw(ITransactionService transactionService)
 static void CheckBalance(ITransactionService transactionService)
 {
     var accountNumber = ReadInput("Enter account number: ");
+
+    if (string.IsNullOrWhiteSpace(accountNumber))
+    {
+        Console.WriteLine(ErrorMessages.AccountNumberRequired);
+        return;
+    }
+
     var balance = transactionService.GetBalance(accountNumber);
 
     Console.WriteLine($"Current balance: {balance:F2}");
@@ -154,8 +166,6 @@ static void CheckBalance(ITransactionService transactionService)
 static void TransferMoney(ITransactionService transactionService)
 {
     var fromAccountNumber = ReadInput("Enter source account number: ");
-    var toAccountNumber = ReadInput("Enter destination account number: ");
-    var amount = ReadAmount("Enter transfer amount: ");
 
     if (string.IsNullOrWhiteSpace(fromAccountNumber))
     {
@@ -163,11 +173,15 @@ static void TransferMoney(ITransactionService transactionService)
         return;
     }
 
+    var toAccountNumber = ReadInput("Enter destination account number: ");
+
     if (string.IsNullOrWhiteSpace(toAccountNumber))
     {
         Console.WriteLine(ErrorMessages.DestinationAccountNumberRequired);
         return;
     }
+
+    var amount = ReadAmount("Enter transfer amount: ");
 
     if (amount is null)
     {
@@ -190,7 +204,7 @@ static decimal? ReadAmount(string prompt)
     Console.Write(prompt);
     var input = Console.ReadLine();
 
-    if (!decimal.TryParse(input, out var amount))
+    if (!decimal.TryParse(input, NumberStyles.Number, CultureInfo.InvariantCulture, out var amount))
     {
         return null;
     }

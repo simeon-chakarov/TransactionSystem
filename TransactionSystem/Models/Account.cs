@@ -8,7 +8,7 @@ public sealed class Account
     private decimal _balance;
 
     public string AccountNumber { get; }
-    public string HolderName { get; }   
+    public string HolderName { get; }
 
     public Account(string accountNumber, string holderName, decimal initialBalance)
     {
