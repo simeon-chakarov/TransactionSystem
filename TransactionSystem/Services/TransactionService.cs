@@ -11,6 +11,18 @@ public sealed class TransactionService(IAccountRepository accountRepository) : I
 
     public void CreateAccount(string accountNumber, string holderName, decimal initialBalance)
     {
+        ValidateAccountNumber(accountNumber, nameof(accountNumber));
+
+        if (string.IsNullOrWhiteSpace(holderName))
+        {
+            throw new ArgumentException(ErrorMessages.AccountHolderNameRequired, nameof(holderName));
+        }
+
+        if (initialBalance < 0)
+        {
+            throw new ArgumentException(ErrorMessages.InitialBalanceCannotBeNegative, nameof(initialBalance));
+        }
+
         var account = new Account(accountNumber, holderName, initialBalance);
         var isCreated = _accountRepository.Create(account);
 
