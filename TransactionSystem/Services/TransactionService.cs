@@ -49,11 +49,6 @@ public sealed class TransactionService(IAccountRepository accountRepository) : I
         ValidateAccountNumber(fromAccountNumber, nameof(fromAccountNumber));
         ValidateAccountNumber(toAccountNumber, nameof(toAccountNumber));
 
-        if (string.Equals(fromAccountNumber, toAccountNumber, StringComparison.Ordinal))
-        {
-            throw new InvalidOperationException(ErrorMessages.CannotTransferToSameAccount);
-        }
-
         var fromAccount = GetRequiredAccount(fromAccountNumber);
         var toAccount = GetRequiredAccount(toAccountNumber);
 
