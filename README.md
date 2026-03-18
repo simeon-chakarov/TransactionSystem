@@ -49,8 +49,3 @@ The application follows a simple layered design:
 
 ```bash
 dotnet run
-
-## Running tests
-
-```bash
-dotnet test
